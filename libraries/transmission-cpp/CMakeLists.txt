@@ -13,13 +13,3 @@ file(GLOB_RECURSE TRANSMISSION_FILES ${TRANSMISSION_LIB_SOURCE_DIR}/*.cpp)
 add_library(transmission-cpp-lib STATIC ${TRANSMISSION_FILES})
 
 target_include_directories(transmission-cpp-lib PUBLIC ${TRANSMISSION_LIB_SOURCE_DIR})
-
-# Generate ctags for vim
-set(TAGS_FILE ${TRANSMISSION_LIB_SOURCE_DIR}/tags)
-add_custom_target(
-  GenerateTransmissionLibTags
-  COMMAND ctags -R -f ${TAGS_FILE} ${TRANSMISSION_LIB_SOURCE_DIR}
-  WORKING_DIRECTORY ${TRANSMISSION_LIB_SOURCE_DIR}
-  COMMENT "Generating ctags"
-)
-add_dependencies(${PROJECT_NAME} GenerateTransmissionLibTags)
