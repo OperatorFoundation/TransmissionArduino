@@ -27,7 +27,7 @@ add_custom_target(build_transmission_rp2040 ALL
             --output-dir ${OUTPUT_DIR}
             --build-property "build.extra_flags=-I${CMAKE_SOURCE_DIR}"
             --build-property "compiler.cpp.extra_flags=-std=c++17"
-            --libraries ${CMAKE_SOURCE_DIR}/libraries
+            --libraries ${CMAKE_SOURCE_DIR}/libraries-rp2040
             ${SKETCH_FILE}
         WORKING_DIRECTORY ${TRANSMISSION_RP2040_SRC_DIR}
         COMMENT "Building echo-server with arduino-cli"
