@@ -105,8 +105,8 @@ std::vector<char> ReliableConnectionSerial1::read() {
     return results;
 }
 
-bytes ReliableConnectionSerial1::read(int size) {
-    bytes results = bytes();
+std::vector<char> ReliableConnectionSerial1::read(int size) {
+    std::vector<char> results = std::vector<char>();
 
     // Drain the ring buffer
     char c;

@@ -48,9 +48,9 @@ std::vector<char> ReliableConnectionUsbCdc::read()
   return bs;
 }
 
-bytes ReliableConnectionUsbCdc::read(int size)
+std::vector<char> ReliableConnectionUsbCdc::read(int size)
 {
-  bytes r = bytes();
+  std::vector<char> r = std::vector<char>();
 
   while(static_cast<int>(r.size()) < size)
   {
