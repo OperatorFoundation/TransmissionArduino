@@ -168,8 +168,8 @@ std::vector<char> ReliableConnectionSerial1::read() {
     return results;
 }
 
-bytes ReliableConnectionSerial1::read(int size) {
-    bytes results;
+std::vector<char> ReliableConnectionSerial1::read(int size) {
+    std::vector<char> results;
     results.reserve(size);
 
     // Drain the ring buffer
