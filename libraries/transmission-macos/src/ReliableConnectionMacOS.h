@@ -15,7 +15,7 @@ class ReliableConnectionMacOS : public Connection
         static const char XOFF = 0x13;
 
         static const int maxBufferSize = 4096;
-        static const int maxReadSize = 32;
+        static int maxReadSize;
 
         ReliableConnectionMacOS(const std::string& device_path = "/dev/tty.usbserial-0001");
         ~ReliableConnectionMacOS();
@@ -24,6 +24,7 @@ class ReliableConnectionMacOS : public Connection
         void end();
         void enableXonXoff();
         void disableXonXoff();
+        void setDebugMode(bool enable);
 
         // Connection interface
         int tryReadOne() override;
@@ -35,6 +36,7 @@ class ReliableConnectionMacOS : public Connection
         std::vector<char> read();
 
     private:
+        bool debug_mode = false;
         std::string device_path;
         int serial_fd;
         std::thread read_thread;

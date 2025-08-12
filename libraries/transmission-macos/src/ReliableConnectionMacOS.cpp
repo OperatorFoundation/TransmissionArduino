@@ -10,7 +10,7 @@
 
 ReliableConnectionMacOS::ReliableConnectionMacOS(const std::string& device_path)
     : device_path(device_path), serial_fd(-1), running(false), xonXoffEnabled(false), 
-      paused(false), buffer_full(false), ring(75, 25)
+      paused(false), buffer_full(false)
 {
 }
 
@@ -117,7 +117,7 @@ bool ReliableConnectionMacOS::configureSerialPort()
 
 void ReliableConnectionMacOS::readThreadFunction()
 {
-    char buffer[256];
+    char buffer[1024];  // INCREASED: Larger buffer for reading
     fd_set read_fds;
     struct timeval timeout;
 
@@ -126,7 +126,7 @@ void ReliableConnectionMacOS::readThreadFunction()
         FD_SET(serial_fd, &read_fds);
         
         timeout.tv_sec = 0;
-        timeout.tv_usec = 100000; // 100ms timeout
+        timeout.tv_usec = 10000; // DECREASED: 10ms timeout for faster response
 
         int result = select(serial_fd + 1, &read_fds, nullptr, nullptr, &timeout);
         
@@ -134,9 +134,23 @@ void ReliableConnectionMacOS::readThreadFunction()
             int bytes_read = ::read(serial_fd, buffer, sizeof(buffer));
             
             if (bytes_read > 0) {
+                // Debug logging of raw bytes
+                if (debug_mode) {
+                    std::cout << "Raw serial (" << bytes_read << " bytes): ";
+                    for (int i = 0; i < bytes_read && i < 50; i++) {  // Limit debug output
+                        char c = buffer[i];
+                        if (c == 0x1B) std::cout << "<ESC>";
+                        else if (c >= 32 && c < 127) std::cout << c;
+                        else std::cout << "<" << std::hex << (int)(unsigned char)c << ">";
+                    }
+                    if (bytes_read > 50) std::cout << "...";
+                    std::cout << std::dec << std::endl;
+                }
+                
                 for (int i = 0; i < bytes_read; i++) {
                     if (!ring.put(buffer[i])) {
                         buffer_full.store(true);
+                        std::cerr << "Ring buffer full! Dropping data." << std::endl;
                         break;
                     }
                 }
@@ -223,9 +237,40 @@ std::vector<char> ReliableConnectionMacOS::read()
 
     char c;
     int count = 0;
-    while (ring.get(c) && count < maxReadSize) {
+    
+    // IMPROVED: Try to read complete escape sequences
+    bool in_escape = false;
+    int escape_timeout = 0;
+    
+    while (count < maxReadSize) {
+        if (!ring.get(c)) {
+            // No more data available
+            if (in_escape && escape_timeout < 10) {
+                // We're in the middle of an escape sequence, wait a bit for more data
+                std::this_thread::sleep_for(std::chrono::microseconds(100));
+                escape_timeout++;
+                continue;
+            }
+            break;
+        }
+        
         results.push_back(c);
         count++;
+        
+        // Track if we're in an escape sequence
+        if (c == 0x1B) {
+            in_escape = true;
+            escape_timeout = 0;
+        } else if (in_escape) {
+            // Check if this completes the escape sequence
+            if (c >= 0x40 && c <= 0x7E) {
+                // This is a final character for most escape sequences
+                in_escape = false;
+            } else if (count > 1 && results[count-2] == 0x1B && c == '\\') {
+                // ST (String Terminator) - ESC \
+                in_escape = false;
+            }
+        }
     }
 
     // Check if we should resume flow control
@@ -283,4 +328,9 @@ void ReliableConnectionMacOS::write(std::vector<char> bs)
         
         total_written += written;
     }
+}
+
+void ReliableConnectionMacOS::setDebugMode(bool enable)
+{
+    debug_mode = enable;
 }
