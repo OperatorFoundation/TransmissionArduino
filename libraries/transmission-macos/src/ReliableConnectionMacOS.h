@@ -15,7 +15,7 @@ class ReliableConnectionMacOS : public Connection
         static const char XOFF = 0x13;
 
         static const int maxBufferSize = 4096;
-        static int maxReadSize;
+        static const int maxReadSize = 1024;
 
         ReliableConnectionMacOS(const std::string& device_path = "/dev/tty.usbserial-0001");
         ~ReliableConnectionMacOS();
