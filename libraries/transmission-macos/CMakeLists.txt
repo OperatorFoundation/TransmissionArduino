@@ -1,5 +1,6 @@
 add_library(transmission-macos
     src/ReliableConnectionMacOS.cpp
+  src/transmission-macos.h
 )
 
 target_link_libraries(transmission-macos

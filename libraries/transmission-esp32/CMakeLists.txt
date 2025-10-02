@@ -18,7 +18,8 @@ set(PORT "/dev/cu.usbmodem1101")
 set(OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/esp32/s3/echo-server)
 file(GLOB_RECURSE TRANSMISSION_FILES ${TRANSMISSION_LIB_SRC_DIR}/*.cpp ${TRANSMISSION_ESP32_SRC_DIR}/*.cpp ${TRANSMISSION_ESP32_EXAMPLE_DIR}/*.cpp ${TRANSMISSION_ESP32_EXAMPLE_DIR}/*.ino)
 
-add_executable(echo-server-esp32 ${TRANSMISSION_FILES})
+add_executable(echo-server-esp32 ${TRANSMISSION_FILES}
+  src/transmission-esp32.h)
 add_dependencies(echo-server-esp32 build_transmission_esp32)
 
 add_custom_target(build_transmission_esp32 ALL

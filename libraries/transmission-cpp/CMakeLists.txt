@@ -10,6 +10,7 @@ set(TRANSMISSION_LIB_SOURCE_DIR ${TRANSMISSION_LIB_DIR}/src)
 
 include_directories(${TRANSMISSION_LIB_SOURCE_DIR})
 file(GLOB_RECURSE TRANSMISSION_FILES ${TRANSMISSION_LIB_SOURCE_DIR}/*.cpp)
-add_library(transmission-cpp-lib STATIC ${TRANSMISSION_FILES})
+add_library(transmission-cpp-lib STATIC ${TRANSMISSION_FILES}
+  src/transmission-cpp.h)
 
 target_include_directories(transmission-cpp-lib PUBLIC ${TRANSMISSION_LIB_SOURCE_DIR})

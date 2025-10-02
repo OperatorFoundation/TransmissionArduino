@@ -18,7 +18,10 @@ set(PORT "/dev/cu.usbmodem1101")
 set(OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rp2040/rp2350/echo-server)
 file(GLOB_RECURSE TRANSMISSION_FILES ${TRANSMISSION_LIB_SRC_DIR}/*.cpp ${TRANSMISSION_RP2040_SRC_DIR}/*.cpp ${TRANSMISSION_RP2040_EXAMPLE_DIR}/*.cpp ${TRANSMISSION_RP2040_EXAMPLE_DIR}/*.ino)
 
-add_executable(echo-server ${TRANSMISSION_FILES})
+add_executable(echo-server ${TRANSMISSION_FILES}
+  ../transmission-arduino/src/transmission-arduino.h
+  src/transmission-rp2040.h
+  ../transmission-teensy/src/transmission-teensy.h)
 add_dependencies(echo-server build_transmission_rp2040)
 
 add_custom_target(build_transmission_rp2040 ALL
