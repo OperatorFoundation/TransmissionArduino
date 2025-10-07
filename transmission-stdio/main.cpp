@@ -2,13 +2,13 @@
 // Created by Dr. Brandon Wiley on 3/17/25.
 //
 
-#include "NovelaMain.h"
+#include "TransmissionMain.h"
 
 int main()
 {
-  NovelaMain novela_main = NovelaMain();
+  TransmissionMain transmission_main = TransmissionMain();
   while(true)
   {
-    novela_main.loop();
+    transmission_main.loop();
   }
 }

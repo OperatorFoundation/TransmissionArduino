@@ -1,10 +1,10 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-class NovelaMain
+class TransmissionMain
 {
   public:
-    NovelaMain();
+    TransmissionMain();
 
     void loop();
 };
