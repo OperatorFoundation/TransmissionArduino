@@ -1,42 +1,11 @@
-//
-// Created by Dr. Brandon Wiley on 10/15/25.
-//
-
-#ifndef ION_CPP_PIPE_H
-#define ION_CPP_PIPE_H
+#ifndef PIPE_H_
+#define PIPE_H_
 
 #include "Connection.h"
 #include "ring_buffer.h"
 #include <memory>
 
-class PipeEnd;
-
-class EXPORT Pipe
-{
-  // Create a pipe with two connected ends
-  Pipe();
-
-  // Get the two connection ends
-  Connection& getEndA();
-  Connection& getEndB();
-
-  // Disable copying (pipes shouldn't be copied)
-  Pipe(const Pipe&) = delete;
-  Pipe& operator=(const Pipe&) = delete;
-
-  private:
-    // Two ring buffers for bidirectional communication
-    // Buffer A->B: written by end A, read by end B
-    InterruptSafeRingBuffer<char, 4096> buffer_a_to_b;
-    // Buffer B->A: written by end B, read by end A
-    InterruptSafeRingBuffer<char, 4096> buffer_b_to_a;
-
-    std::unique_ptr<PipeEnd> end_a;
-    std::unique_ptr<PipeEnd> end_b;
-
-    friend class PipeEnd;
-};
-
+// PipeEnd must be fully defined before Pipe since Pipe uses unique_ptr<PipeEnd>
 class EXPORT PipeEnd : public Connection {
   public:
     PipeEnd(InterruptSafeRingBuffer<char, 4096>& read_buf,
@@ -57,4 +26,31 @@ class EXPORT PipeEnd : public Connection {
     InterruptSafeRingBuffer<char, 4096>& write_buffer;
 };
 
-#endif //ION_CPP_PIPE_H
+class EXPORT Pipe {
+  public:
+    // Create a pipe with two connected ends
+    Pipe();
+    ~Pipe() = default;
+
+    // Get the two connection ends
+    Connection& getEndA();
+    Connection& getEndB();
+
+    // Disable copying and moving
+    Pipe(const Pipe&) = delete;
+    Pipe& operator=(const Pipe&) = delete;
+    Pipe(Pipe&&) = delete;
+    Pipe& operator=(Pipe&&) = delete;
+
+  private:
+    // Two ring buffers for bidirectional communication
+    // Buffer A->B: written by end A, read by end B
+    InterruptSafeRingBuffer<char, 4096> buffer_a_to_b;
+    // Buffer B->A: written by end B, read by end A
+    InterruptSafeRingBuffer<char, 4096> buffer_b_to_a;
+
+    std::unique_ptr<PipeEnd> end_a;
+    std::unique_ptr<PipeEnd> end_b;
+};
+
+#endif // PIPE_H_
