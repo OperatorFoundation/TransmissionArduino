@@ -6,5 +6,6 @@
 #define TRANSMISSION_TRANSMISSION_CPP_H
 
 #include "Connection.h"
+#include "Pipe.h"
 
 #endif //TRANSMISSION_TRANSMISSION_CPP_H
