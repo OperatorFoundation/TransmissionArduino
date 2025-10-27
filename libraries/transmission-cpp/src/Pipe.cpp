@@ -60,7 +60,7 @@ std::vector<char> PipeEnd::read(int size) {
 void PipeEnd::write(std::vector<char> bs) {
   for (char ch : bs) {
     if (!write_buffer.put(ch)) {
-      throw std::runtime_error("Pipe write failed: buffer full");
+      return;
     }
   }
 }
