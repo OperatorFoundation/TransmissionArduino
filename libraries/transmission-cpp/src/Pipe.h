@@ -11,6 +11,8 @@ class EXPORT PipeEnd : public Connection {
     PipeEnd(InterruptSafeRingBuffer<char, 4096>& read_buf,
             InterruptSafeRingBuffer<char, 4096>& write_buf);
 
+    [[nodiscard]] int tryReadOne() override;
+    [[nodiscard]] char readOne() override;
     [[nodiscard]] std::vector<char> read(int size) override;
     void write(std::vector<char> bs) override;
 
