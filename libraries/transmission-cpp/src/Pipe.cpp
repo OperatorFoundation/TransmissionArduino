@@ -4,8 +4,6 @@
 
 #include "Pipe.h"
 
-#include <stdexcept>
-
 // Pipe implementation
 Pipe::Pipe()
     : end_a(std::make_unique<PipeEnd>(buffer_b_to_a, buffer_a_to_b)),
@@ -39,7 +37,7 @@ int PipeEnd::tryReadOne() {
 char PipeEnd::readOne() {
   char ch;
   if (!read_buffer.get(ch)) {
-    throw std::runtime_error("Pipe read failed: no data available");
+    return -1;
   }
   return ch;
 }
