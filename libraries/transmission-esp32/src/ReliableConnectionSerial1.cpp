@@ -193,3 +193,8 @@ std::vector<char> ReliableConnectionSerial1::read(int size) {
 void ReliableConnectionSerial1::write(std::vector<char> bs) {
     uart_write_bytes(UART_PORT, bs.data(), bs.size());
 }
+
+bool ReliableConnectionSerial1::availableForReading()
+{
+    return ring.available() > 0;
+}

@@ -334,3 +334,8 @@ void ReliableConnectionMacOS::setDebugMode(bool enable)
 {
     debug_mode = enable;
 }
+
+bool ReliableConnectionMacOS::availableForReading()
+{
+    return ring.available() > 0;
+}

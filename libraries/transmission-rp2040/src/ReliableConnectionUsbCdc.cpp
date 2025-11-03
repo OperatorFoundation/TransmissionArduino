@@ -48,9 +48,9 @@ std::vector<char> ReliableConnectionUsbCdc::read()
   return bs;
 }
 
-bytes ReliableConnectionUsbCdc::read(int size)
+std::vector<char> ReliableConnectionUsbCdc::read(int size)
 {
-  bytes r = bytes();
+  std::vector<char> r = std::vector<char>();
 
   while(r.size() < size)
   {
@@ -66,3 +66,7 @@ void ReliableConnectionUsbCdc::write(std::vector<char> bs)
   Serial.write(bs.data(), bs.size()); // Send each byte
 }
 
+bool ReliableConnectionUsbCdc::availableForReading()
+{
+  return Serial.available() > 0;
+}

@@ -31,6 +31,7 @@ class ReliableConnectionMacOS : public Connection
         char readOne() override;
         std::vector<char> read(int size) override;
         void write(std::vector<char> bs) override;
+        bool availableForReading() override;
 
         // Convenience method (not in base interface)
         std::vector<char> read();

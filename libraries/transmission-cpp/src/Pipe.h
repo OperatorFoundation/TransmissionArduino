@@ -15,6 +15,7 @@ class EXPORT PipeEnd : public Connection {
     [[nodiscard]] char readOne() override;
     [[nodiscard]] std::vector<char> read(int size) override;
     void write(std::vector<char> bs) override;
+    bool availableForReading() override;
 
     // Additional utility methods for testing
     size_t available() const;

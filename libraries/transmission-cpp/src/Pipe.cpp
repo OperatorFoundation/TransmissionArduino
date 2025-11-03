@@ -65,6 +65,14 @@ void PipeEnd::write(std::vector<char> bs) {
   }
 }
 
+bool PipeEnd::availableForReading()
+{
+  size_t bytesAvailable = available();
+
+  return bytesAvailable > 0;
+}
+
+
 size_t PipeEnd::available() const {
   return read_buffer.count();
 }

@@ -18,6 +18,7 @@ class ReliableConnectionUsbCdc : public Connection
     std::vector<char> read();
     std::vector<char> read(int size);
     void write(std::vector<char> bs);
+    bool availableForReading();
 };
 
 #endif //RELIABLECONNECTIONUSBCDC_H

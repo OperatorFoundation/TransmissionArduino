@@ -17,6 +17,7 @@ class EXPORT Connection
         [[nodiscard]] virtual char readOne() = 0;
         [[nodiscard]] virtual std::vector<char> read(int size) = 0;
         virtual void write(std::vector<char> bs) = 0;
+        virtual bool availableForReading() = 0;
 };
 
 #endif

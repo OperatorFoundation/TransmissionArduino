@@ -128,3 +128,8 @@ void ReliableConnectionSerial1::write(std::vector<char> bs) {
         Serial1.write(c);
     }
 }
+
+bool ReliableConnectionSerial1::availableForReading()
+{
+    return ring.available() > 0;
+}

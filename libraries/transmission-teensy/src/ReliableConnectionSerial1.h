@@ -33,6 +33,7 @@ class ReliableConnectionSerial1 : public Connection
 		std::vector<char> read();
 		std::vector<char> read(int size);
 		void write(std::vector<char> bs);
+		bool availableForReading();
 		// end Connection
 
 	private:

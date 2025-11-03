@@ -128,9 +128,9 @@ std::vector<char> ReliableConnectionSerial1::read()
   return results;
 }
 
-bytes ReliableConnectionSerial1::read(int size)
+std::vector<char> ReliableConnectionSerial1::read(int size)
 {
-  bytes results = bytes();
+  std::vector<char> results = std::vector<char>();
 
   // Drain the ring buffer
   char c;
@@ -155,4 +155,9 @@ void ReliableConnectionSerial1::write(std::vector<char> bs)
   {
     uart_putc_raw(uart0, c);
   }
+}
+
+bool ReliableConnectionSerial1::availableForReading()
+{
+  return ring.available() > 0;
 }

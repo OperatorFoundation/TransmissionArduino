@@ -66,3 +66,9 @@ void ReliableConnectionUsbCdc::write(std::vector<char> bs)
   Serial.write(bs.data(), bs.size()); // Send each byte
 }
 
+bool ReliableConnectionUsbCdc::availableForReading()
+{
+  int bytesAvailable = Serial.available();
+
+  return bytesAvailable > 0;
+}

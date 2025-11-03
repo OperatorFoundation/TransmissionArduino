@@ -22,15 +22,16 @@ class ReliableConnectionSerial1 : public Connection
     ~ReliableConnectionSerial1() {}
 
     void begin();
-	void enableXonXoff();
+				void enableXonXoff();
     void disableXonXoff();
 
     // Connection
     int tryReadOne();
     char readOne();
     std::vector<char> read();
-    bytes read(int size);
+    std::vector<char> read(int size);
     void write(std::vector<char> bs);
+				bool availableForReading();
     // end Connection
 
 	private:
