@@ -104,8 +104,6 @@ using RingBuffer1024 = InterruptSafeRingBuffer<uint8_t, 1024>;
 using RingBuffer2048 = InterruptSafeRingBuffer<uint8_t, 2048>;
 using RingBuffer4096 = InterruptSafeRingBuffer<uint8_t, 4096>;
 
-#endif // INTERRUPT_SAFE_RING_BUFFER_H
-
 // ===== Example usage in main.cpp =====
 /*
 #include "InterruptSafeRingBuffer.h"
@@ -213,3 +211,5 @@ void main_loop() {
     }
 }
 */
+
+#endif // INTERRUPT_SAFE_RING_BUFFER_H
