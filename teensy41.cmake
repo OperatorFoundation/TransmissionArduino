@@ -1,3 +1,9 @@
+# Guard to prevent re-running
+if(TEENSY41_CONFIGURED)
+  return()
+endif()
+set(TEENSY41_CONFIGURED TRUE CACHE INTERNAL "")
+
 # Function to check if a command exists
 function(command_exists COMMAND RESULT_VAR)
   if(WIN32)

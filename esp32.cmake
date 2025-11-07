@@ -1,3 +1,9 @@
+# Guard to prevent re-running
+if(ESP32_CONFIGURED)
+  return()
+endif()
+set(ESP32_CONFIGURED TRUE CACHE INTERNAL "")
+
 # Update the core index
 message(STATUS "Updating arduino-cli core index...")
 execute_process(

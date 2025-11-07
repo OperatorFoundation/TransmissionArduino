@@ -1,3 +1,9 @@
+# Guard to prevent re-running
+if(ARDUINO_CLI_CONFIGURED)
+  return()
+endif()
+set(ARDUINO_CLI_CONFIGURED TRUE CACHE INTERNAL "")
+
 # Function to check if a command exists
 function(command_exists COMMAND RESULT_VAR)
   if(WIN32)
@@ -65,7 +71,6 @@ execute_process(
   OUTPUT_QUIET
   ERROR_QUIET
 )
-
 
 # Adafruit board manager URL
 execute_process(

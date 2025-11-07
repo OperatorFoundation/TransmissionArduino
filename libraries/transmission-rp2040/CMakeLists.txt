@@ -21,10 +21,12 @@ file(GLOB_RECURSE TRANSMISSION_FILES ${TRANSMISSION_LIB_SRC_DIR}/*.cpp ${TRANSMI
 add_executable(echo-server ${TRANSMISSION_FILES}
   ../transmission-arduino/src/transmission-arduino.h
   src/transmission-rp2040.h
-  ../transmission-teensy/src/transmission-teensy.h)
+  ../transmission-teensy/src/transmission-teensy.h
+  ../transmission-arduino/src/ReliableConnectionSerial1.cpp
+  ../transmission-arduino/src/ReliableConnectionSerial1.h)
 add_dependencies(echo-server build_transmission_rp2040)
 
-add_custom_target(build_transmission_rp2040 ALL
+add_custom_target(build_transmission_rp2040
         COMMAND arduino-cli compile
             --fqbn ${BOARD}
             --output-dir ${OUTPUT_DIR}
@@ -36,7 +38,7 @@ add_custom_target(build_transmission_rp2040 ALL
         COMMENT "Building echo-server with arduino-cli"
 )
 
-add_custom_target(upload_transmission_rp2040 ALL
+add_custom_target(upload_transmission_rp2040
         COMMAND arduino-cli upload
         -p ${PORT}
         --fqbn ${BOARD}

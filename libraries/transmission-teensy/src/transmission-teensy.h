@@ -5,6 +5,7 @@
 #ifndef TRANSMISSION_TRANSMISSION_TEENSY_H
 #define TRANSMISSION_TRANSMISSION_TEENSY_H
 
+#include "ReliableConnectionUsbCdc.h"
 #include "ReliableConnectionSerial1.h"
 
 #endif //TRANSMISSION_TRANSMISSION_TEENSY_H

@@ -1,8 +1,7 @@
 #include <Arduino.h>
 #include <string>
 
-#include <ReliableConnectionUsbCdc.h>
-#include <ReliableConnectionSerial1.h>
+#include <transmission-teensy.h>
 
 ReliableConnectionUsbCdc usb = ReliableConnectionUsbCdc();
 ReliableConnectionSerial1* serial1 = ReliableConnectionSerial1::getInstance();

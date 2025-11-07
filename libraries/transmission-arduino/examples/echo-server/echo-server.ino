@@ -24,7 +24,7 @@ void setup()
 
 void loop()
 {
-  std::vector<char> output = usb->read();
+  std::vector<char> output = usb.read();
   if(!output.empty())
   {
     usb.write(output);

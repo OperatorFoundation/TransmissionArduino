@@ -5,7 +5,7 @@
 #include <ReliableConnectionSerial1.h>
 
 ReliableConnectionUsbCdc usb = ReliableConnectionUsbCdc();
-ReliableConnectionSerial1* serial1 = ReliableConnectionSerial1::getInstance();
+ReliableConnectionSerial1 serial1 = ReliableConnectionSerial1();
 
 void setup()
 {
@@ -20,8 +20,8 @@ void setup()
   Serial.println("Hello, Operator.");
   delay(2000); // Wait for USB to be initialized
 
-  serial1->enableXonXoff();
-  serial1->begin();
+  //serial1.enableXonXoff();
+  //serial1.begin();
 
   Serial.println("setup() complete.");
   Serial.write("\033[2J\033[H"); // Clear screen and send cursor to home
@@ -29,7 +29,7 @@ void setup()
 
 void loop()
 {
-  std::vector<char> output = serial1->read();
+  std::vector<char> output = serial1.read();
   if(!output.empty())
   {
     usb.write(output);
@@ -38,6 +38,6 @@ void loop()
   std::vector<char> input = usb.read();
   if(!input.empty())
   {
-    serial1->write(input);
+    serial1.write(input);
   }
 }
