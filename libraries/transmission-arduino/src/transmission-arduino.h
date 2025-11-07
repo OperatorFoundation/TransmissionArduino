@@ -5,6 +5,7 @@
 #ifndef TRANSMISSION_TRANSMISSION_ARDUINO_H
 #define TRANSMISSION_TRANSMISSION_ARDUINO_H
 
+#include "ReliableConnectionSerial1.h"
 #include "ReliableConnectionUsbCdc.h"
 
 #endif //TRANSMISSION_TRANSMISSION_ARDUINO_H
