@@ -12,13 +12,13 @@ ReliableConnectionSerial1::ReliableConnectionSerial1()
 
 int ReliableConnectionSerial1::tryReadOne()
 {
-  return Serial.read();
+  return Serial1.read();
 }
 
 char ReliableConnectionSerial1::readOne()
 {
   // Wait for serial port to be ready
-  while(!Serial || !Serial.available())
+  while(!Serial1 || !Serial1.available())
   {
     delay(0.01);
   }
@@ -26,7 +26,7 @@ char ReliableConnectionSerial1::readOne()
   int b = -1;
   while(b == -1)
   {
-    b = Serial.read();
+    b = Serial1.read();
   }
 
   return (byte)b;
@@ -34,7 +34,7 @@ char ReliableConnectionSerial1::readOne()
 
 std::vector<char> ReliableConnectionSerial1::read()
 {
-  int available = Serial.available();
+  int available = Serial1.available();
   if (available == 0)
   {
     return std::vector<char>();
@@ -42,7 +42,7 @@ std::vector<char> ReliableConnectionSerial1::read()
 
   std::vector<char> bs = std::vector<char>(available);
 
-  int bytesRead = Serial.readBytes(bs.data(), available);
+  int bytesRead = Serial1.readBytes(bs.data(), available);
   bs.resize(bytesRead);
 
   return bs;
@@ -63,12 +63,12 @@ std::vector<char> ReliableConnectionSerial1::read(int size)
 
 void ReliableConnectionSerial1::write(std::vector<char> bs)
 {
-  Serial.write(bs.data(), bs.size()); // Send each byte
+  Serial1.write(bs.data(), bs.size()); // Send each byte
 }
 
 bool ReliableConnectionSerial1::availableForReading()
 {
-  int bytesAvailable = Serial.available();
+  int bytesAvailable = Serial1.available();
 
   return bytesAvailable > 0;
 }
