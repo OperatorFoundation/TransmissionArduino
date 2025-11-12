@@ -34,8 +34,8 @@ class EXPORT Pipe {
     ~Pipe() = default;
 
     // Get the two connection ends
-    Connection& getEndA();
-    Connection& getEndB();
+    PipeEnd& getEndA();
+    PipeEnd& getEndB();
 
     // Disable copying and moving
     Pipe(const Pipe&) = delete;

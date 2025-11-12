@@ -11,11 +11,11 @@ Pipe::Pipe()
 {
 }
 
-Connection& Pipe::getEndA() {
+PipeEnd& Pipe::getEndA() {
   return *end_a;
 }
 
-Connection& Pipe::getEndB() {
+PipeEnd& Pipe::getEndB() {
   return *end_b;
 }
 
