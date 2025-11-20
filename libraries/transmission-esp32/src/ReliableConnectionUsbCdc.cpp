@@ -172,6 +172,10 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
                     paused = true;
                 }
             }
+            else
+            {
+                if(logger) { logger->debugf("X"); }
+            }
         }
 
         // Drain the ring buffer
