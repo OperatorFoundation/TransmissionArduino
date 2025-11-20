@@ -9,16 +9,6 @@
 ReliableConnectionUsbCdc::ReliableConnectionUsbCdc() : ring(75, 25) {}
 
 void ReliableConnectionUsbCdc::begin() {
-    // Initialize USB CDC Serial
-    Serial.begin(115200);  // Baud rate is mostly ignored for USB CDC but set anyway
-
-    // Wait for USB connection (optional, remove if you don't want to wait)
-    // while (!Serial) {
-    //     delay(10);
-    // }
-
-    delay(100);  // Give USB stack time to initialize
-
     if (xonXoffEnabled) {
         char xon = XON;
         Serial.write(xon);
@@ -66,11 +56,40 @@ int ReliableConnectionUsbCdc::tryReadOne() {
 }
 
 char ReliableConnectionUsbCdc::readOne() {
-    int result = tryReadOne();
-    if (result >= 0) {
-        return static_cast<char>(result);
+    char c;
+
+    // Block until we get a character
+    while (true) {
+        // First check ring buffer
+        if (ring.get(c)) {
+            return c;
+        }
+
+        // Try to fill ring buffer from Serial
+        while (Serial.available() > 0) {
+            int byte = Serial.read();
+            if (byte >= 0) {
+                if (!ring.put(static_cast<char>(byte))) {
+                    buffer_full = true;
+                    break;
+                }
+
+                // Check flow control
+                if (!paused && xonXoffEnabled && ring.shouldSendXOFF()) {
+                    Serial.write(XOFF);
+                    paused = true;
+                }
+            }
+        }
+
+        // Check ring buffer again after filling
+        if (ring.get(c)) {
+            return c;
+        }
+
+        // Small delay to avoid busy-waiting and burning CPU
+        delay(1);  // or delayMicroseconds(100) for faster response
     }
-    return 0;
 }
 
 std::vector<char> ReliableConnectionUsbCdc::read() {
