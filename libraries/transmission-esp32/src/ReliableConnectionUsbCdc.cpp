@@ -6,6 +6,8 @@
 
 #include <Arduino.h>
 
+Logger* ReliableConnectionUsbCdc::logger = nullptr;
+
 ReliableConnectionUsbCdc::ReliableConnectionUsbCdc() : ring(75, 25) {}
 
 void ReliableConnectionUsbCdc::begin() {
@@ -33,6 +35,7 @@ int ReliableConnectionUsbCdc::tryReadOne() {
     // Try to fill ring buffer from Serial
     while (Serial.available() > 0) {
         int byte = Serial.read();
+		if(logger) { logger->debugf("ReliableConnectionUsbCDC.tryReadOne(): read 0x%08X", byte); }
         if (byte >= 0) {
             if (!ring.put(static_cast<char>(byte))) {
                 buffer_full = true;
@@ -63,6 +66,7 @@ char ReliableConnectionUsbCdc::readOne() {
         // Try to fill ring buffer from Serial
         while (Serial.available() > 0 && ring.available() < ring.capacity()) {
             int byte = Serial.read();
+            if(logger) { logger->debugf("ReliableConnectionUsbCDC.readOne(): read 0x%08X", byte); }
             if (byte >= 0) {
                 if (!ring.put(static_cast<char>(byte))) {
                     buffer_full = true;
@@ -94,6 +98,7 @@ std::vector<char> ReliableConnectionUsbCdc::read() {
     // First, pull any available data from Serial into ring buffer
     while (Serial.available() > 0 && ring.available() < ring.capacity()) {
         int byte = Serial.read();
+		if(logger) { logger->debugf("ReliableConnectionUsbCDC.read(): read 0x%08X", byte); }
         if (byte >= 0) {
             if (!ring.put(static_cast<char>(byte))) {
                 buffer_full = true;
@@ -134,6 +139,7 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
         // Pull any available data from Serial into ring buffer
         while (Serial.available() > 0 && ring.available() < ring.capacity()) {
             int byte = Serial.read();
+            if(logger) { logger->debugf("ReliableConnectionUsbCDC.read(%d): read 0x%08X", size, byte); }
             if (byte >= 0) {
                 if (!ring.put(static_cast<char>(byte))) {
                     buffer_full = true;

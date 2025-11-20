@@ -8,6 +8,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 #include(rp2040.cmake)
 #include(esp32.cmake)
 
+set(ONDA ${CMAKE_SOURCE_DIR}/libraries-esp32/onda)
+set(CMAKE_HELPERS ${CMAKE_SOURCE_DIR}/libraries-esp32/cmake-helpers)
+
+add_subdirectory("libraries/onda")
 add_subdirectory("libraries/transmission-cpp")
 add_subdirectory("libraries/transmission-arduino")
 add_subdirectory("libraries/transmission-rp2040")

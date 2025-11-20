@@ -8,6 +8,7 @@
 #include <Connection.h>
 
 #include <ring_buffer.h>
+#include <onda.h>
 
 class ReliableConnectionUsbCdc : public Connection
 {
@@ -19,6 +20,8 @@ class ReliableConnectionUsbCdc : public Connection
     static const int maxReadSize = 32;
 
     static void uart0_handler();
+
+	static Logger* logger;
 
     ReliableConnectionUsbCdc();
     ~ReliableConnectionUsbCdc() {}

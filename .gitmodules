@@ -1,0 +1,6 @@
+[submodule "lib/cmake-helpers"]
+	path = lib/cmake-helpers
+	url = https://github.com/OperatorFoundation/cmake-helpers.git
+[submodule "lib/onda"]
+	path = lib/onda
+	url = https://github.com/OperatorFoundation/onda.git
