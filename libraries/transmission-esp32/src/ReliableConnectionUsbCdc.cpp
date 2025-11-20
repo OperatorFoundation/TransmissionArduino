@@ -134,29 +134,35 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
     std::vector<char> results;
     results.reserve(size);
 
-    // First, pull any available data from Serial into ring buffer
-    while (Serial.available() > 0 && ring.available() < ring.capacity() && results.size() < size) {
-        int byte = Serial.read();
-        if (byte >= 0) {
-            if (!ring.put(static_cast<char>(byte))) {
-                buffer_full = true;
-                break;
-            }
+    // Block until we have 'size' bytes
+    while (results.size() < size) {
+        // Pull any available data from Serial into ring buffer
+        while (Serial.available() > 0 && ring.available() < ring.capacity()) {
+            int byte = Serial.read();
+            if (byte >= 0) {
+                if (!ring.put(static_cast<char>(byte))) {
+                    buffer_full = true;
+                    break;
+                }
 
-            // Check flow control
-            if (!paused && xonXoffEnabled && ring.shouldSendXOFF()) {
-                Serial.write(XOFF);
-                paused = true;
+                // Check flow control
+                if (!paused && xonXoffEnabled && ring.shouldSendXOFF()) {
+                    Serial.write(XOFF);
+                    paused = true;
+                }
             }
         }
-    }
 
-    // Drain the ring buffer
-    char c;
-    int count = 0;
-    while (ring.get(c) && count < size) {
-        results.push_back(c);
-        count++;
+        // Drain the ring buffer
+        char c;
+        while (ring.get(c) && results.size() < size) {
+            results.push_back(c);
+        }
+
+        // If we still don't have enough, wait a bit
+        if (results.size() < size) {
+            yield();  // Let other tasks run
+        }
     }
 
     // Check if we should resume flow
