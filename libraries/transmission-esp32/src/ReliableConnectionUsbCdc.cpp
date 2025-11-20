@@ -35,7 +35,7 @@ int ReliableConnectionUsbCdc::tryReadOne() {
     // Try to fill ring buffer from Serial
     while (Serial.available() > 0) {
         int byte = Serial.read();
-		if(logger) { logger->debugf("ReliableConnectionUsbCDC.tryReadOne(): read 0x%08X", byte); }
+		if(logger) { logger->debugf("+0x%08X", byte); }
         if (byte >= 0) {
             if (!ring.put(static_cast<char>(byte))) {
                 buffer_full = true;
@@ -69,7 +69,7 @@ char ReliableConnectionUsbCdc::readOne() {
         while (Serial.available() > 0 && ring.available() < ring.capacity()) {
             int byte = Serial.read();
             if (byte >= 0) {
-                if(logger) { logger->debugf("ReliableConnectionUsbCDC.readOne(): while loop read 0x%08X", byte); }
+                if(logger) { logger->debugf("+0x%08X", byte); }
                 if (!ring.put(static_cast<char>(byte))) {
                     buffer_full = true;
                     break;
@@ -83,13 +83,13 @@ char ReliableConnectionUsbCdc::readOne() {
             }
             else
             {
-                if(logger) { logger->debugf("ReliableConnectionUsbCDC.readOne(): no more data to read"); }
+                if(logger) { logger->debugf("X"); }
             }
         }
 
         // Check ring buffer after filling
         if (ring.get(c)) {
-            if(logger) { logger->debugf("ReliableConnectionUsbCDC.readOne(): returning 0x%08X", c); }
+            if(logger) { logger->debugf("-0x%08X", c); }
             return c;
         }
 
