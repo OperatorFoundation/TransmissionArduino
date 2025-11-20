@@ -60,13 +60,8 @@ char ReliableConnectionUsbCdc::readOne() {
 
     // Block until we get a character
     while (true) {
-        // First check ring buffer
-        if (ring.get(c)) {
-            return c;
-        }
-
         // Try to fill ring buffer from Serial
-        while (Serial.available() > 0) {
+        while (Serial.available() > 0 && ring.available() < ring.capacity()) {
             int byte = Serial.read();
             if (byte >= 0) {
                 if (!ring.put(static_cast<char>(byte))) {
@@ -82,7 +77,7 @@ char ReliableConnectionUsbCdc::readOne() {
             }
         }
 
-        // Check ring buffer again after filling
+        // Check ring buffer after filling
         if (ring.get(c)) {
             return c;
         }
