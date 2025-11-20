@@ -18,12 +18,10 @@ class ReliableConnectionUsbCdc : public Connection
     static const int maxBufferSize = 4096;
     static const int maxReadSize = 32;
 
-    static ReliableConnectionSerial1* instance;
-
-    static ReliableConnectionSerial1* getInstance();
     static void uart0_handler();
 
-    ~ReliableConnectionSerial1() {}
+    ReliableConnectionUsbCdc();
+    ~ReliableConnectionUsbCdc() {}
 
     void begin();
     void enableXonXoff();
@@ -43,8 +41,6 @@ class ReliableConnectionUsbCdc : public Connection
     FlowControlRingBuffer<char, maxBufferSize> ring;
     volatile bool paused = false;
     volatile bool buffer_full = false;
-
-    ReliableConnectionSerial1();
 };
 
 #endif //EDEN_RELIABLECONNECTIONUSBCDC_H

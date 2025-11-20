@@ -6,5 +6,6 @@
 #define TRANSMISSION_TRANSMISSION_ESP32_H
 
 #include "ReliableConnectionSerial1.h"
+#include "ReliableConnectionUsbCdc.h"
 
 #endif //TRANSMISSION_TRANSMISSION_ESP32_H

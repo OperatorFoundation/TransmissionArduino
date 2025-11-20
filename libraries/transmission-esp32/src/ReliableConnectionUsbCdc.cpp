@@ -6,25 +6,9 @@
 
 #include <Arduino.h>
 
-// Static members
-ReliableConnectionUsbCdc* ReliableConnectionUsbCdc::instance = nullptr;
-
-ReliableConnectionUsbCdc* ReliableConnectionUsbCdc::getInstance() {
-    if (!instance) {
-        instance = new ReliableConnectionUsbCdc();
-    }
-    return instance;
-}
-
-ReliableConnectionUsbCdc::ReliableConnectionUsbCdc() : ring(75, 25) {
-    instance = this;
-}
+ReliableConnectionUsbCdc::ReliableConnectionUsbCdc() : ring(75, 25) {}
 
 void ReliableConnectionUsbCdc::begin() {
-    if (!instance) {
-        return;
-    }
-
     // Initialize USB CDC Serial
     Serial.begin(115200);  // Baud rate is mostly ignored for USB CDC but set anyway
 

@@ -4,6 +4,8 @@
 #include <Connection.h>
 
 #include <ring_buffer.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
 
 class ReliableConnectionSerial1 : public Connection
 {
@@ -14,11 +16,14 @@ class ReliableConnectionSerial1 : public Connection
     static const int maxBufferSize = 4096;
     static const int maxReadSize = 32;
 
+				static QueueHandle_t uart_queue;
+
     static ReliableConnectionSerial1* instance;
 
     static ReliableConnectionSerial1* getInstance();
     static void uart0_handler();
 
+				ReliableConnectionSerial1();
     ~ReliableConnectionSerial1() {}
 
     void begin();
@@ -39,8 +44,6 @@ class ReliableConnectionSerial1 : public Connection
 		FlowControlRingBuffer<char, maxBufferSize> ring;
 		volatile bool paused = false;
 		volatile bool buffer_full = false;
-
-		ReliableConnectionSerial1();
 };
 
 #endif

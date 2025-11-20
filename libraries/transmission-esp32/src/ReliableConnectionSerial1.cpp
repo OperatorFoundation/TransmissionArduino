@@ -8,27 +8,16 @@ static const int UART_TX_PIN = 17;  // Adjust for your hardware
 static const int UART_RX_PIN = 18;  // Adjust for your hardware
 static const int ESP_BUF_SIZE = 2048;
 
-// Static members
-ReliableConnectionSerial1* ReliableConnectionSerial1::instance = nullptr;
-static QueueHandle_t uart_queue = nullptr;
+QueueHandle_t ReliableConnectionSerial1::uart_queue = nullptr;
 
-ReliableConnectionSerial1* ReliableConnectionSerial1::getInstance() {
-    if (!instance) {
-        instance = new ReliableConnectionSerial1();
-    }
-    return instance;
-}
-
-ReliableConnectionSerial1::ReliableConnectionSerial1() : ring(75, 25) {
-    instance = this;
-}
+ReliableConnectionSerial1::ReliableConnectionSerial1() : ring(75, 25) {}
 
 // ESP32-S3 uses task-based UART handling instead of direct ISR
 void ReliableConnectionSerial1::uart0_handler() {
     // On ESP32, this is handled by the UART event task
     // This function exists for API compatibility
 
-    if (!instance || !uart_queue) {
+    if (!uart_queue) {
         return;
     }
 
@@ -60,7 +49,7 @@ static void uart_event_task(void* pvParameters) {
     uart_event_t event;
 
     while (true) {
-        if (xQueueReceive(uart_queue, (void*)&event, portMAX_DELAY)) {
+        if (xQueueReceive(ReliableConnectionSerial1::uart_queue, (void*)&event, portMAX_DELAY)) {
             switch (event.type) {
                 case UART_DATA:
                     // Call the handler which has access to private members
@@ -69,12 +58,12 @@ static void uart_event_task(void* pvParameters) {
 
                 case UART_FIFO_OVF:
                     uart_flush_input(UART_PORT);
-                    xQueueReset(uart_queue);
+                    xQueueReset(ReliableConnectionSerial1::uart_queue);
                     break;
 
                 case UART_BUFFER_FULL:
                     uart_flush_input(UART_PORT);
-                    xQueueReset(uart_queue);
+                    xQueueReset(ReliableConnectionSerial1::uart_queue);
                     break;
 
                 default:
