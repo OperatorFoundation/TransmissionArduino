@@ -61,7 +61,7 @@ int ReliableConnectionUsbCdc::tryReadOne() {
 char ReliableConnectionUsbCdc::readOne() {
     char c;
 
-    if(logger) { logger->debugf("ReliableConnectionUsbCDC.readOne()"); }
+    if(logger) { logger->debugf("readOne()"); }
 
     // Block until we get a character
     while (true) {
@@ -102,13 +102,16 @@ std::vector<char> ReliableConnectionUsbCdc::read() {
     std::vector<char> results;
     results.reserve(maxReadSize);
 
+    if(logger) { logger->debugf("read()"); }
+
     // First, pull any available data from Serial into ring buffer
     while (Serial.available() > 0 && ring.available() < ring.capacity()) {
         int byte = Serial.read();
-		if(logger) { logger->debugf("ReliableConnectionUsbCDC.read(): read 0x%08X", byte); }
+		if(logger) { logger->debugf("+0x%08X", byte); }
         if (byte >= 0) {
             if (!ring.put(static_cast<char>(byte))) {
                 buffer_full = true;
+                if(logger) { logger->debugf("!"); }
                 break;
             }
 
@@ -134,6 +137,13 @@ std::vector<char> ReliableConnectionUsbCdc::read() {
         paused = false;
     }
 
+    if(logger)
+    {
+        for(auto c: results)
+        {
+            logger->debugf("-0x%08X", c);
+        }
+    }
     return results;
 }
 
@@ -141,15 +151,18 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
     std::vector<char> results;
     results.reserve(size);
 
+    if(logger) { logger->debugf("read(%d)", size); }
+
     // Block until we have 'size' bytes
     while (results.size() < size) {
         // Pull any available data from Serial into ring buffer
         while (Serial.available() > 0 && ring.available() < ring.capacity()) {
             int byte = Serial.read();
-            if(logger) { logger->debugf("ReliableConnectionUsbCDC.read(%d): read 0x%08X", size, byte); }
+            if(logger) { logger->debugf("+0x%08X", byte); }
             if (byte >= 0) {
                 if (!ring.put(static_cast<char>(byte))) {
                     buffer_full = true;
+                    if(logger) { logger->debugf("!"); }
                     break;
                 }
 
@@ -177,6 +190,11 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
     if (paused && xonXoffEnabled && ring.shouldSendXON()) {
         Serial.write(XON);
         paused = false;
+    }
+
+    for(auto c: results)
+    {
+        if(logger) { logger->debugf("-0x%08X", c); }
     }
 
     return results;
