@@ -328,6 +328,8 @@ void ReliableConnectionMacOS::write(std::vector<char> bs)
         
         total_written += written;
     }
+
+    tcdrain(serial_fd);
 }
 
 void ReliableConnectionMacOS::setDebugMode(bool enable)
