@@ -182,19 +182,6 @@ void ReliableConnectionUsbCdc::write(std::vector<char> bs) {
 
 bool ReliableConnectionUsbCdc::availableForReading()
 {
-    // Check both Serial buffer and ring buffer
-    if (Serial.available() > 0) {
-        // Pull data into ring buffer
-        while (Serial.available() > 0 && ring.available() < ring.capacity()) {
-            int byte = Serial.read();
-            if (byte >= 0) {
-                if (!ring.put(static_cast<char>(byte))) {
-                    buffer_full = true;
-                    break;
-                }
-            }
-        }
-    }
-
-    return ring.available() > 0;
+    // Just check if there's data available - don't consume it!
+    return (ring.available() > 0) || (Serial.available() > 0);
 }
