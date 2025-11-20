@@ -151,7 +151,7 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
     std::vector<char> results;
     results.reserve(size);
 
-    if(logger) { logger->debugf("read(%d)", size); }
+    if(logger) { logger->debugf("read(%d)\n", size); }
 
     // Block until we have 'size' bytes
     while (results.size() < size) {
