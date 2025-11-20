@@ -35,7 +35,7 @@ int ReliableConnectionUsbCdc::tryReadOne() {
     // Try to fill ring buffer from Serial
     while (Serial.available() > 0) {
         int byte = Serial.read();
-		if(logger) { logger->debugf("+0x%08X (%d)", byte, ring.count()); }
+		if(logger) { logger->debugf("+0x%08X (%d)", byte, ring.count()+1); }
         if (byte >= 0) {
             if (!ring.put(static_cast<char>(byte))) {
                 buffer_full = true;
@@ -69,7 +69,7 @@ char ReliableConnectionUsbCdc::readOne() {
         while (Serial.available() > 0 && ring.available() < ring.capacity()) {
             int byte = Serial.read();
             if (byte >= 0) {
-                if(logger) { logger->debugf("+0x%08X (%d)", byte, ring.count()); }
+                if(logger) { logger->debugf("+0x%08X (%d)", byte, ring.count()+1); }
                 if (!ring.put(static_cast<char>(byte))) {
                     buffer_full = true;
                     break;
@@ -89,7 +89,7 @@ char ReliableConnectionUsbCdc::readOne() {
 
         // Check ring buffer after filling
         if (ring.get(c)) {
-            if(logger) { logger->debugf("-0x%08X", c); }
+            if(logger) { logger->debugf("-0x%08X (%d)", c, ring.count()); }
             return c;
         }
 
@@ -107,7 +107,7 @@ std::vector<char> ReliableConnectionUsbCdc::read() {
     // First, pull any available data from Serial into ring buffer
     while (Serial.available() > 0 && ring.available() < ring.capacity()) {
         int byte = Serial.read();
-		if(logger) { logger->debugf("+0x%08X (%d)", byte, ring.count()); }
+		if(logger) { logger->debugf("+0x%08X (%d)", byte, ring.count()+1); }
         if (byte >= 0) {
             if (!ring.put(static_cast<char>(byte))) {
                 buffer_full = true;
@@ -128,6 +128,7 @@ std::vector<char> ReliableConnectionUsbCdc::read() {
     int count = 0;
     while (ring.get(c) && count < maxReadSize) {
         results.push_back(c);
+        logger->debugf("-0x%08X (%d)", c, ring.count());
         count++;
     }
 
@@ -137,13 +138,6 @@ std::vector<char> ReliableConnectionUsbCdc::read() {
         paused = false;
     }
 
-    if(logger)
-    {
-        for(auto c: results)
-        {
-            logger->debugf("-0x%08X", c);
-        }
-    }
     return results;
 }
 
@@ -158,7 +152,7 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
         // Pull any available data from Serial into ring buffer
         while (Serial.available() > 0 && ring.available() < ring.capacity()) {
             int byte = Serial.read();
-            if(logger) { logger->debugf("+0x%08X (%d)", byte, ring.count()); }
+            if(logger) { logger->debugf("+0x%08X (%d)", byte, ring.count()+1); }
             if (byte >= 0) {
                 if (!ring.put(static_cast<char>(byte))) {
                     buffer_full = true;
@@ -182,6 +176,7 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
         char c;
         while (ring.get(c) && results.size() < size) {
             results.push_back(c);
+            if(logger) { logger->debugf("-0x%08X (%d)", c, ring.count()); }
         }
 
         // If we still don't have enough, wait a bit
@@ -194,11 +189,6 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
     if (paused && xonXoffEnabled && ring.shouldSendXON()) {
         Serial.write(XON);
         paused = false;
-    }
-
-    for(auto c: results)
-    {
-        if(logger) { logger->debugf("-0x%08X", c); }
     }
 
     return results;
