@@ -183,11 +183,8 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
         bool firstWait = true;
         if (results.size() < size) {
             if(logger && firstWait) { firstWait = false; logger->debugf("."); }
+            while(1) { if(Serial.available() > 0) { break; } } // FIXME - remove, this is for debugging
             yield();  // Let other tasks run
-        }
-        if(!firstWait)
-        {
-            if(logger) { logger->debugf(";"); }
         }
     }
 
