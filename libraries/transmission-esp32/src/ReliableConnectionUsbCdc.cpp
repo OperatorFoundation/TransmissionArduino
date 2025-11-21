@@ -181,12 +181,14 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
 
         // If we still don't have enough, wait a bit
         if (results.size() < size) {
+            if(logger) { logger->debugf("."); }
             yield();  // Let other tasks run
         }
     }
 
     // Check if we should resume flow
     if (paused && xonXoffEnabled && ring.shouldSendXON()) {
+        if(logger) { logger->debugf("XON"); }
         Serial.write(XON);
         paused = false;
     }
