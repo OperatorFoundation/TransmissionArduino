@@ -180,9 +180,14 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size) {
         }
 
         // If we still don't have enough, wait a bit
+        bool firstWait = true;
         if (results.size() < size) {
-            if(logger) { logger->debugf("."); }
+            if(logger && firstWait) { firstWait = false; logger->debugf("."); }
             yield();  // Let other tasks run
+        }
+        if(!firstWait)
+        {
+            if(logger) { logger->debugf(";"); }
         }
     }
 
