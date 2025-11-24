@@ -151,7 +151,7 @@ std::vector<char> ReliableConnectionUsbCdc::read(int size)
     // Block until we have 'size' bytes
     while (results.size() < size)
     {
-        int c = readOne();
+        char c = readOne();
         results.push_back(c);
         if(logger) { logger->debugf("-0x%08X (%d)", c, ring.count()); }
     }
