@@ -7,5 +7,6 @@
 
 #include "ReliableConnectionSerial1.h"
 #include "ReliableConnectionUsbCdc.h"
+#include "ReliableConnectionWiFiTcp.h"
 
 #endif //TRANSMISSION_TRANSMISSION_ESP32_H
