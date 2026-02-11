@@ -8,7 +8,7 @@
 
 Logger* ReliableConnectionUsbCdc::logger = nullptr;
 
-ReliableConnectionUsbCdc::ReliableConnectionUsbCdc() : ring(1500, 1200) {}
+ReliableConnectionUsbCdc::ReliableConnectionUsbCdc() : ring("usbcdc", 1500, 1200) {}
 
 void ReliableConnectionUsbCdc::begin() {
     if (xonXoffEnabled) {
