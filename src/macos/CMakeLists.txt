@@ -1,19 +1,19 @@
 add_library(transmission-macos
-    src/ReliableConnectionMacOS.cpp
-  src/transmission-macos.h
+  src/ReliableConnectionMacOS.cpp
+  src/ReliableConnectionTcpMacOS.cpp
 )
 
-target_link_libraries(transmission-macos
-    PUBLIC
+target_link_libraries(transmission-macos PUBLIC
     transmission-cpp-lib
+    onda
+    onda-macos
 )
 
-target_include_directories(transmission-macos
-    PUBLIC 
-    include
-
-    PRIVATE
-    src
+target_include_directories(transmission-macos PUBLIC
+    ${ONDA}/src
+    ${ONDA_MACOS}/src
+    ${TRANSMISSION}/src
+    ${TRANSMISSION_MACOS}/src
 )
 
 if(APPLE)

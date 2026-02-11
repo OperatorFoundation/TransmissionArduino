@@ -10,7 +10,7 @@ static const int ESP_BUF_SIZE = 2048;
 
 QueueHandle_t ReliableConnectionSerial1::uart_queue = nullptr;
 
-ReliableConnectionSerial1::ReliableConnectionSerial1() : ring(75, 25) {}
+ReliableConnectionSerial1::ReliableConnectionSerial1(const int rxPin, const int txPin) : rxPin(rxPin == -1 ? UART_RX_PIN : rxPin), txPin(txPin == -1 ? UART_TX_PIN : txPin), ring(75, 25) {}
 
 // ESP32-S3 uses task-based UART handling instead of direct ISR
 void ReliableConnectionSerial1::uart0_handler() {
@@ -92,7 +92,7 @@ void ReliableConnectionSerial1::begin() {
     // Install UART driver with event queue
     uart_driver_install(UART_PORT, ESP_BUF_SIZE * 2, ESP_BUF_SIZE * 2, 20, &uart_queue, 0);
     uart_param_config(UART_PORT, &uart_config);
-    uart_set_pin(UART_PORT, UART_TX_PIN, UART_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+    uart_set_pin(UART_PORT, txPin, rxPin, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
 
     // Set UART interrupt threshold for fast response
     uart_set_rx_full_threshold(UART_PORT, 1);

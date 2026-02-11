@@ -3,11 +3,11 @@ project(transmission-esp32)
 
 set(CMAKE_CXX_STANDARD 17)
 set(TRANSMISSION_ESP32_SRC_DIR ${TRANSMISSION_ESP32}/src)
-set(TRANSMISSION_ESP32_EXAMPLE_DIR ${TRANSMISSION_ESP32}/examples/echo-server)
+set(TRANSMISSION_ESP32_EXAMPLE_DIR ${TRANSMISSION_ESP32}/examples/wifi-tcp)
 include_directories(${TRANSMISSION} ${TRANSMISSION_ESP32})
 
 # Define your sketch file
-set(SKETCH_FILE ${TRANSMISSION_ESP32_EXAMPLE_DIR}/echo-server.ino)
+set(SKETCH_FILE ${TRANSMISSION_ESP32_EXAMPLE_DIR}/wifi-tcp.ino)
 
 set(BOARD "esp32:esp32:adafruit_feather_esp32s3_nopsram")
 set(PORT "/dev/cu.usbmodem1101")

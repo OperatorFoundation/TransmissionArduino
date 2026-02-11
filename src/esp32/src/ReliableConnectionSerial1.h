@@ -23,7 +23,7 @@ class ReliableConnectionSerial1 : public Connection
     static ReliableConnectionSerial1* getInstance();
     static void uart0_handler();
 
-				ReliableConnectionSerial1();
+				ReliableConnectionSerial1(int rxPin = 0, int txPin = 0);
     ~ReliableConnectionSerial1() {}
 
     void begin();
@@ -40,6 +40,8 @@ class ReliableConnectionSerial1 : public Connection
     // end Connection
 
 	private:
+		int rxPin = -1;
+		int txPin = -1;
 		bool xonXoffEnabled = false;
 		FlowControlRingBuffer<char, maxBufferSize> ring;
 		volatile bool paused = false;

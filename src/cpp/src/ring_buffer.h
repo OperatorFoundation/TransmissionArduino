@@ -6,6 +6,8 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <iostream>
+#include <string>
 
 template<typename T, size_t SIZE>
 class InterruptSafeRingBuffer {
@@ -17,16 +19,35 @@ private:
     volatile size_t head = 0;  // Written by producer (ISR)
     volatile size_t tail = 0;  // Written by consumer (main)
     
+    // Optional logging tag
+    std::string log_tag;
+    
 public:
     // Constructor
-    InterruptSafeRingBuffer() = default;
+    InterruptSafeRingBuffer(const std::string& tag = "") : log_tag(tag) {}
+    
+    // Set logging tag after construction
+    void setLogTag(const std::string& tag) {
+        log_tag = tag;
+    }
+    
+    // Get logging tag
+    const std::string& getLogTag() const {
+        return log_tag;
+    }
     
     // Producer interface (call from ISR)
     bool put(const T& item) {
         size_t next_head = (head + 1) & (SIZE - 1);
         
         if (next_head == tail) {
-            return false;  // Buffer full
+            // Buffer full - log the error
+            std::cerr << "Ring buffer";
+            if (!log_tag.empty()) {
+                std::cerr << " [" << log_tag << "]";
+            }
+            std::cerr << " FULL! Contains " << count() << " bytes (max " << (SIZE - 1) << ")" << std::endl;
+            return false;
         }
         
         buffer[head] = item;
@@ -110,11 +131,12 @@ using RingBuffer4096 = InterruptSafeRingBuffer<uint8_t, 4096>;
 #include <hardware/uart.h>
 #include <hardware/irq.h>
 
-// Create a 2048-byte ring buffer
-InterruptSafeRingBuffer<uint8_t, 2048> uart_rx_buffer;
+// Create a 2048-byte ring buffer with a tag
+InterruptSafeRingBuffer<uint8_t, 2048> uart_rx_buffer("UART_RX");
 
-// Or use the typedef
-// RingBuffer2048 uart_rx_buffer;
+// Or use the typedef and set tag later
+RingBuffer2048 uart_rx_buffer;
+uart_rx_buffer.setLogTag("UART_RX");
 
 // Interrupt handler
 void uart1_irq_handler() {
@@ -122,7 +144,7 @@ void uart1_irq_handler() {
         uint8_t data = uart_getc(uart1);
         
         if (!uart_rx_buffer.put(data)) {
-            // Buffer full - handle overflow
+            // Buffer full - error already logged with tag
             // Could set a flag, increment counter, etc.
         }
     }
@@ -139,7 +161,9 @@ void loop() {
 
 // Check buffer status
 void checkStatus() {
-    Serial.print("Buffer: ");
+    Serial.print("Buffer [");
+    Serial.print(uart_rx_buffer.getLogTag());
+    Serial.print("]: ");
     Serial.print(uart_rx_buffer.count());
     Serial.print("/");
     Serial.print(uart_rx_buffer.capacity());
@@ -161,8 +185,8 @@ private:
     const uint8_t low_water_mark;
     
 public:
-    FlowControlRingBuffer(uint8_t high_percent = 75, uint8_t low_percent = 25)
-        : high_water_mark(high_percent), low_water_mark(low_percent) {}
+    FlowControlRingBuffer(const std::string& tag = "", uint8_t high_percent = 75, uint8_t low_percent = 25)
+        : Base(tag), high_water_mark(high_percent), low_water_mark(low_percent) {}
     
     bool shouldSendXOFF() const {
         return Base::percentFull() >= high_water_mark;
@@ -179,7 +203,7 @@ public:
 
 // ===== Usage example with flow control =====
 /*
-FlowControlRingBuffer<uint8_t, 2048> uart_buffer;
+FlowControlRingBuffer<uint8_t, 2048> uart_buffer("UART_RX");
 bool flow_stopped = false;
 
 void uart_handler() {
@@ -187,7 +211,7 @@ void uart_handler() {
         uint8_t data = uart_getc(uart1);
         
         if (!uart_buffer.put(data)) {
-            // Overflow!
+            // Overflow! (already logged with tag)
         }
         
         // Check flow control
