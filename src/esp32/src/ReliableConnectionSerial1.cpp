@@ -12,6 +12,13 @@ QueueHandle_t ReliableConnectionSerial1::uart_queue = nullptr;
 
 ReliableConnectionSerial1::ReliableConnectionSerial1(const int rxPin, const int txPin) : rxPin(rxPin == -1 ? UART_RX_PIN : rxPin), txPin(txPin == -1 ? UART_TX_PIN : txPin), ring("serial1", 75, 25) {}
 
+ReliableConnectionSerial1* ReliableConnectionSerial1::getInstance() {
+    if (!instance) {
+        instance = new ReliableConnectionSerial1();
+    }
+    return instance;
+}
+
 // ESP32-S3 uses task-based UART handling instead of direct ISR
 void ReliableConnectionSerial1::uart0_handler() {
     // On ESP32, this is handled by the UART event task
