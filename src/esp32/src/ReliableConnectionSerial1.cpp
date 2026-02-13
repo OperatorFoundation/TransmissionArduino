@@ -9,7 +9,7 @@ static const int UART_RX_PIN = 18;  // Adjust for your hardware
 static const int ESP_BUF_SIZE = 2048;
 
 QueueHandle_t ReliableConnectionSerial1::uart_queue = nullptr;
-ReliableConnectionSerial1* instance;
+ReliableConnectionSerial1* ReliableConnectionSerial1::instance = nullptr;
 
 ReliableConnectionSerial1::ReliableConnectionSerial1(const int rxPin, const int txPin) : rxPin(rxPin == -1 ? UART_RX_PIN : rxPin), txPin(txPin == -1 ? UART_TX_PIN : txPin), ring("serial1", 75, 25) {}
 
